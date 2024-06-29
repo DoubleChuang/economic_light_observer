@@ -1,0 +1,31 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Specific tools
+.mypy_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+*.cover
+.env
+tmp
