@@ -1,11 +1,14 @@
 # Economic Light Observer
 
-## How to use
-Create a .env file, and modify the configuration in the file
+## Get Started
+Create a `.env` file, and modify the configuration in the file
 
 ```
 LINE_NOTIFY_TOKEN=YOUR_LINE_TOKEN
 ```
+
+
+### Run with Docker
 
 Build docker image from source code
 
@@ -23,6 +26,21 @@ Run by Docker Images built with GitHub Actions
 
 ```
 docker run --rm --name economic_light_observer --env-file .env ghcr.io/doublechuang/economic_light_observer:latest
+```
+
+### Run locally
+This project uses [Poetry](https://python-poetry.org/docs/) as the package manager so you need to install it first 
+(it only needs to be installed once)
+```
+pip install poetry
+```
+Use `Poetry` install dependencies
+```
+poetry install
+```
+Use `Poetry` execute
+```
+poetry run python3 main.py
 ```
 
 
