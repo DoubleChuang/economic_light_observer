@@ -53,8 +53,7 @@ COPY economic_light_observer ./economic_light_observer
 COPY pyproject.toml poetry.lock README.md ./
 
 RUN poetry config virtualenvs.in-project true && \
-    poetry install 
-    # --only=main --no-root
+    poetry install --without test    
 
 RUN rm -rf \
     pyproject.toml \
