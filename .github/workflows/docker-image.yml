@@ -4,6 +4,15 @@ on:
   push:
     branches:
       - main
+      - feat/**
+      - fix/**
+      - docs/**
+      - style/**
+      - refactor/**
+      - perf/**
+      - test/**
+      - chore/**
+      - revert/**
     paths-ignore:
       - 'README.md'
       - 'docs/**'
@@ -90,23 +99,33 @@ jobs:
           OWNER=$( echo ${{ github.repository_owner }} | tr '[A-Z]' '[a-z]' )
           echo "OWNER=$OWNER" >> $GITHUB_ENV
           
-
-          
-      - name: Build and push
+      - name: Build and push with SHA tag
         uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm64
-          # platforms: linux/amd64
           push: true
-          # no-cache: true
           tags: |
-            ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}
-            ${{ env.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_NAME }}
             ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }}
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }}
-#           cache-from: type=local,src=/tmp/.buildx-cache
-#           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Push to DockerHub and GHCR with specific tags
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Pull the image built in the previous step
+          docker pull ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }}
+
+          # Tag the image as latest version to push to GHCR
+          docker tag ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }} ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}
+
+          # Tag the image as latest version to push to DockerHub
+          docker tag ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }} ${{ env.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_NAME }}
+
+          # Push to GHCR
+          docker push ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}
+
+          # Push to DockerHub
+          docker push ${{ env.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_NAME }}
 
 #       - name: Move cache
 #         run: |

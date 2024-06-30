@@ -2,7 +2,7 @@
 import asyncio
 from decouple import config
 from economic_light_observer.economic_light_observer import EconomicLightObserver
-from economic_light_observer.crawler.taiwan import TaiwanEconomicLightCrawler
+from economic_light_observer.crawler.taiwan_playwright import TaiwanEconomicLightPlaywrightCrawler
 import requests
 
 import nest_asyncio
@@ -45,10 +45,15 @@ def send_line_notify(message, token):
         print("無法發送Line Notify通知")
 
 async def main():
-    taiwan_economic_observer = EconomicLightObserver(TaiwanEconomicLightCrawler("https://index.ndc.gov.tw/n/zh_tw"))
-    message = await taiwan_economic_observer.analyze()
+    url = "https://index.ndc.gov.tw/n/zh_tw"
+    crawler = TaiwanEconomicLightPlaywrightCrawler(url)
+    taiwan_economic_observer = EconomicLightObserver(crawler)
+    analyze_message = await taiwan_economic_observer.analyze()
+    line_message = f"\n{analyze_message}{tip}"
     
-    send_line_notify(f"\n{message}{tip}", LINE_NOTIFY_TOKEN)
+    # print(line_message)
+    
+    send_line_notify(line_message, LINE_NOTIFY_TOKEN)
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())

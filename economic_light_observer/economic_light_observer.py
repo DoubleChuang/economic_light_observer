@@ -20,6 +20,6 @@ class EconomicLightObserver():
     elif lights == [EconomicLight.藍燈]*observed_months:
         ret = f"{latest_month.strftime('%Y/%m')} 景氣低迷 連續{observed_months}個{EconomicLight.藍燈.name}"
     else:
-        ret = f"{latest_month.strftime('%Y/%m')} 景氣正常: {[EconomicLight(month).name for month in last_x_lights]}"        
+        ret = f"{latest_month.strftime('%Y/%m')} 景氣正常: {[EconomicLight(month).name for month in last_x_lights]}"
     
     return ret
