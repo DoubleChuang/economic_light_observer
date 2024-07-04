@@ -109,12 +109,22 @@ jobs:
             ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }}
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }}
 
-      - name: Push to DockerHub and GHCR with specific tags
+      - name: Push to DockerHub and GHCR with specific tags        
         if: github.ref == 'refs/heads/main'
         run: |
+          # Pull the image built in the previous step
+          docker pull ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }}
+
+          # Tag the image as latest version to push to GHCR
           docker tag ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }} ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}
+
+          # Tag the image as latest version to push to DockerHub
           docker tag ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}:${{ env.SHA }} ${{ env.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_NAME }}
+
+          # Push to GHCR
           docker push ghcr.io/${{ env.OWNER }}/${{ env.REGISTRY_NAME }}
+
+          # Push to DockerHub
           docker push ${{ env.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_NAME }}
 
 #       - name: Move cache
